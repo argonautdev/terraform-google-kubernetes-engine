@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Extending the adopted spec, each change should have a link to its corresponding pull request appended.
 
+## [23.1.0](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/compare/v23.0.0...v23.1.0) (2022-08-25)
+
+
+### Features
+
+* enable PoCo referential_rules for ACM ([#1373](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/issues/1373)) ([b9287de](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/commit/b9287de679592a2adcae4d98dcfee33a001f328b))
+
 ## [23.0.0](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/compare/v22.1.0...v23.0.0) (2022-08-22)
 
 
