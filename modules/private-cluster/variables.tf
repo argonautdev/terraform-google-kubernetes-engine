@@ -117,12 +117,14 @@ variable "maintenance_exclusions" {
 
 variable "ip_range_pods" {
   type        = string
-  description = "The _name_ of the secondary subnet ip range to use for pods"
+  description = "The IP address range for the cluster pod IPs. **leaving to empty leads to choose a range automatically with default size**"
+  default     = ""
 }
 
 variable "ip_range_services" {
   type        = string
-  description = "The _name_ of the secondary subnet range to use for services"
+  description = "The IP address range for the services. **leaving to empty leads to choose a range automatically with default size**"
+  default     = ""
 }
 
 variable "node_pools" {

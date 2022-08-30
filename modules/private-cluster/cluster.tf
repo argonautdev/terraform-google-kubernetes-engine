@@ -117,10 +117,10 @@ resource "google_container_cluster" "primary" {
   }
 
   datapath_provider = var.datapath_provider
-
+  
   ip_allocation_policy {
-    cluster_secondary_range_name  = var.ip_range_pods
-    services_secondary_range_name = var.ip_range_services
+    cluster_ipv4_cidr_block  = var.ip_range_pods ##IP range for clusters pod ips
+    services_ipv4_cidr_block = var.ip_range_services ##The IP address range of the services IPs in this cluster
   }
 
   maintenance_policy {
