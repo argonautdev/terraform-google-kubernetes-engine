@@ -130,7 +130,7 @@ resource "google_container_cluster" "primary" {
   }
 
   lifecycle {
-    ignore_changes = [node_pool, initial_node_count, resource_labels["asmv"], resource_labels["mesh_id"]]
+    ignore_changes = [initial_node_count, resource_labels["asmv"], resource_labels["mesh_id"]]
   }
 
   timeouts {
@@ -138,49 +138,53 @@ resource "google_container_cluster" "primary" {
     update = "45m"
     delete = "45m"
   }
-  node_pool {
-    name               = "default-pool"
-    initial_node_count = var.initial_node_count
+  ##Since we are removing default nodepool, the following attribute must be set along side remove_default_node_pool
+  ## From Terraform docs: Must be set if node_pool is not set. 
+  initial_node_count = var.initial_node_count
+  remove_default_node_pool = var.remove_default_node_pool
+  # node_pool {
+  #   name               = "default-pool"
+  #   initial_node_count = var.initial_node_count
 
-    node_config {
-      image_type       = lookup(var.node_pools[0], "image_type", "COS_CONTAINERD")
-      machine_type     = lookup(var.node_pools[0], "machine_type", "e2-medium")
-      min_cpu_platform = lookup(var.node_pools[0], "min_cpu_platform", "")
-      disk_size_gb    = lookup(var.node_pools[0], "disk_size_gb", 30)
-      disk_type       = lookup(var.node_pools[0], "disk_type", "pd-balanced")
-      dynamic "gcfs_config" {
-        for_each = lookup(var.node_pools[0], "enable_gcfs", false) ? [true] : []
-        content {
-          enabled = gcfs_config.value
-        }
-      }
+  #   node_config {
+  #     image_type       = lookup(var.node_pools[0], "image_type", "COS_CONTAINERD")
+  #     machine_type     = lookup(var.node_pools[0], "machine_type", "e2-medium")
+  #     min_cpu_platform = lookup(var.node_pools[0], "min_cpu_platform", "")
+  #     disk_size_gb    = lookup(var.node_pools[0], "disk_size_gb", 30)
+  #     disk_type       = lookup(var.node_pools[0], "disk_type", "pd-balanced")
+  #     dynamic "gcfs_config" {
+  #       for_each = lookup(var.node_pools[0], "enable_gcfs", false) ? [true] : []
+  #       content {
+  #         enabled = gcfs_config.value
+  #       }
+  #     }
 
-      service_account = lookup(var.node_pools[0], "service_account", local.service_account)
+  #     service_account = lookup(var.node_pools[0], "service_account", local.service_account)
 
-      tags = concat(
-        lookup(local.node_pools_tags, "default_values", [true, true])[0] ? [local.cluster_network_tag] : [],
-        lookup(local.node_pools_tags, "default_values", [true, true])[1] ? ["${local.cluster_network_tag}-default-pool"] : [],
-        lookup(local.node_pools_tags, "all", []),
-        lookup(local.node_pools_tags, var.node_pools[0].name, []),
-      )
+  #     tags = concat(
+  #       lookup(local.node_pools_tags, "default_values", [true, true])[0] ? [local.cluster_network_tag] : [],
+  #       lookup(local.node_pools_tags, "default_values", [true, true])[1] ? ["${local.cluster_network_tag}-default-pool"] : [],
+  #       lookup(local.node_pools_tags, "all", []),
+  #       lookup(local.node_pools_tags, var.node_pools[0].name, []),
+  #     )
 
-      dynamic "workload_metadata_config" {
-        for_each = local.cluster_node_metadata_config
+  #     dynamic "workload_metadata_config" {
+  #       for_each = local.cluster_node_metadata_config
 
-        content {
-          mode = workload_metadata_config.value.mode
-        }
-      }
+  #       content {
+  #         mode = workload_metadata_config.value.mode
+  #       }
+  #     }
 
-      metadata = local.node_pools_metadata["all"]
+  #     metadata = local.node_pools_metadata["all"]
 
 
-      shielded_instance_config {
-        enable_secure_boot          = lookup(var.node_pools[0], "enable_secure_boot", false)
-        enable_integrity_monitoring = lookup(var.node_pools[0], "enable_integrity_monitoring", true)
-      }
-    }
-  }
+  #     shielded_instance_config {
+  #       enable_secure_boot          = lookup(var.node_pools[0], "enable_secure_boot", false)
+  #       enable_integrity_monitoring = lookup(var.node_pools[0], "enable_integrity_monitoring", true)
+  #     }
+  #   }
+  # }
 
   dynamic "resource_usage_export_config" {
     for_each = var.resource_usage_export_dataset_id != "" ? [{
@@ -211,8 +215,6 @@ resource "google_container_cluster" "primary" {
       master_ipv4_cidr_block  = private_cluster_config.value.master_ipv4_cidr_block
     }
   }
-
-  remove_default_node_pool = var.remove_default_node_pool
 
   dynamic "database_encryption" {
     for_each = var.database_encryption
