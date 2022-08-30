@@ -131,11 +131,7 @@ variable "node_pools" {
   type        = list(map(string))
   description = "List of maps containing node pools"
 
-  default = [
-    {
-      name = "default-node-pool"
-    },
-  ]
+  default = []
 }
 
 variable "node_pools_labels" {
@@ -145,7 +141,6 @@ variable "node_pools_labels" {
   # Default is being set in variables_defaults.tf
   default = {
     all               = {}
-    default-node-pool = {}
   }
 }
 
@@ -156,7 +151,6 @@ variable "node_pools_metadata" {
   # Default is being set in variables_defaults.tf
   default = {
     all               = {}
-    default-node-pool = {}
   }
 }
 
@@ -205,7 +199,6 @@ variable "node_pools_taints" {
   # Default is being set in variables_defaults.tf
   default = {
     all               = []
-    default-node-pool = []
   }
 }
 
@@ -216,7 +209,6 @@ variable "node_pools_tags" {
   # Default is being set in variables_defaults.tf
   default = {
     all               = []
-    default-node-pool = []
   }
 }
 
@@ -227,7 +219,6 @@ variable "node_pools_oauth_scopes" {
   # Default is being set in variables_defaults.tf
   default = {
     all               = ["https://www.googleapis.com/auth/cloud-platform"]
-    default-node-pool = []
   }
 }
 
@@ -421,13 +412,13 @@ variable "network_policy_provider" {
 variable "initial_node_count" {
   type        = number
   description = "The number of nodes to create in this cluster's default node pool."
-  default     = 0
+  default     = 1
 }
 
 variable "remove_default_node_pool" {
   type        = bool
   description = "Remove default node pool while setting up the cluster"
-  default     = false
+  default     = true
 }
 
 variable "filestore_csi_driver" {
