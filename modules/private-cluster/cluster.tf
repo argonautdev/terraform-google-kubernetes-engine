@@ -117,10 +117,10 @@ resource "google_container_cluster" "primary" {
   }
 
   datapath_provider = var.datapath_provider
-
+  
   ip_allocation_policy {
-    cluster_secondary_range_name  = var.ip_range_pods
-    services_secondary_range_name = var.ip_range_services
+    cluster_ipv4_cidr_block  = var.ip_range_pods ##IP range for clusters pod ips
+    services_ipv4_cidr_block = var.ip_range_services ##The IP address range of the services IPs in this cluster
   }
 
   maintenance_policy {
@@ -141,7 +141,10 @@ resource "google_container_cluster" "primary" {
   node_pool {
     name               = "default-pool"
     initial_node_count = var.initial_node_count
-
+    management  {
+      auto_repair = lookup(var.node_pools[0], "auto_repair", true)
+      auto_upgrade = lookup(var.node_pools[0], "auto_upgrade", true)
+    }
     node_config {
       image_type       = lookup(var.node_pools[0], "image_type", "COS_CONTAINERD")
       machine_type     = lookup(var.node_pools[0], "machine_type", "e2-medium")
