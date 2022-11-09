@@ -246,7 +246,7 @@ resource "google_container_node_pool" "pools" {
   provider = google
   for_each = local.node_pools
   # name     = each.key
-  name_prefix = "${each.key}-"
+  name_prefix = "${each.key}-art-"
   project  = var.project_id
   location = local.location
   // use node_locations if provided, defaults to cluster level node_locations if not specified
