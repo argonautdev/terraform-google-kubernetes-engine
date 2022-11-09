@@ -245,7 +245,8 @@ resource "google_container_cluster" "primary" {
 resource "google_container_node_pool" "pools" {
   provider = google
   for_each = local.node_pools
-  name     = each.key
+  # name     = each.key
+  name_prefix = "${each.key}-art-"
   project  = var.project_id
   location = local.location
   // use node_locations if provided, defaults to cluster level node_locations if not specified
@@ -373,7 +374,7 @@ resource "google_container_node_pool" "pools" {
 
   lifecycle {
     ignore_changes = [initial_node_count]
-
+    create_before_destroy = true
   }
 
   timeouts {
