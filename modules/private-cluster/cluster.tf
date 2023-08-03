@@ -254,12 +254,6 @@ resource "google_container_node_pool" "pools" {
 
   cluster = google_container_cluster.primary.name
   
-  # version = lookup(each.value, "auto_upgrade", false) ? "" : lookup(
-  #   each.value,
-  #   "version",
-  #   # google_container_cluster.primary.min_master_version,
-  #   local.master_version
-  # )
   version = google_container_cluster.primary.min_master_version
 
   initial_node_count = lookup(each.value, "autoscaling", true) ? lookup(
