@@ -239,6 +239,13 @@ resource "google_container_cluster" "primary" {
   }
 
 }
+
+
+data "google_container_cluster" "primary" {
+  name     = google_container_cluster.primary.name
+  location = local.location
+}
+
 /******************************************
   Create Container Cluster node pools
  *****************************************/
@@ -254,7 +261,8 @@ resource "google_container_node_pool" "pools" {
 
   cluster = google_container_cluster.primary.name
   
-  version = google_container_cluster.primary.min_master_version
+  # version = google_container_cluster.primary.min_master_version
+  version = data.google_container_cluster.primary.master_version
 
   initial_node_count = lookup(each.value, "autoscaling", true) ? lookup(
     each.value,
