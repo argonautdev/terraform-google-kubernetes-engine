@@ -253,12 +253,14 @@ resource "google_container_node_pool" "pools" {
   node_locations = lookup(each.value, "node_locations", "") != "" ? split(",", each.value["node_locations"]) : null
 
   cluster = google_container_cluster.primary.name
-
-  version = lookup(each.value, "auto_upgrade", false) ? "" : lookup(
-    each.value,
-    "version",
-    google_container_cluster.primary.min_master_version,
-  )
+  
+  # version = lookup(each.value, "auto_upgrade", false) ? "" : lookup(
+  #   each.value,
+  #   "version",
+  #   # google_container_cluster.primary.min_master_version,
+  #   local.master_version
+  # )
+  version = google_container_cluster.primary.min_master_version
 
   initial_node_count = lookup(each.value, "autoscaling", true) ? lookup(
     each.value,
